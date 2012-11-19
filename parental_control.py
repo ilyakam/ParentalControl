@@ -1,4 +1,4 @@
-import sublime, sublime_plugin
+import sublime, sublime_plugin, re
 
 # Adds parentheses around the current word:
 class AddParenthesesCommand(sublime_plugin.TextCommand):
@@ -11,6 +11,9 @@ class AddParenthesesCommand(sublime_plugin.TextCommand):
       
       # Continue to put parentheses around the word:
       if selection.empty():
+        # Skip trying to put parentheses around empty words:
+        if re.match("\s+", view.substr(view.word(selection))): continue
+        
         opening_position = view.word(selection).begin()
         closing_position = view.word(selection).end() + 1
         
@@ -19,6 +22,7 @@ class AddParenthesesCommand(sublime_plugin.TextCommand):
         opening_position = selection.begin()
         closing_position = selection.end() + 1
       
+      # Actually put the paretheses around the selection:
       if opening_position and closing_position:
         view.insert(edit, opening_position, "(")
         view.insert(edit, closing_position, ")")
