@@ -1,3 +1,4 @@
 [
+  {"keys": ["super+shift+9"], "command": "add_parentheses"},
   {"keys": ["super+shift+0"], "command": "remove_parentheses"}
 ]

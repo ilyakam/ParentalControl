@@ -1,5 +1,28 @@
 import sublime, sublime_plugin
 
+# Adds parentheses around the current word:
+class AddParenthesesCommand(sublime_plugin.TextCommand):
+  def run(self, edit):
+    view = self.view
+    
+    for selection in view.sel():
+      opening_position = False
+      closing_position = False
+      
+      # Continue to put parentheses around the word:
+      if selection.empty():
+        opening_position = view.word(selection).begin()
+        closing_position = view.word(selection).end() + 1
+        
+      # Put paretheses around the entire selection, mimicking the default behavior:
+      else:
+        opening_position = selection.begin()
+        closing_position = selection.end() + 1
+      
+      if opening_position and closing_position:
+        view.insert(edit, opening_position, "(")
+        view.insert(edit, closing_position, ")")
+
 # Removes parentheses around the cursor in a given line:
 class RemoveParenthesesCommand(sublime_plugin.TextCommand):
   parentheses_types = ["(", "[", "{"]
@@ -8,10 +31,9 @@ class RemoveParenthesesCommand(sublime_plugin.TextCommand):
                        "{": "}"}
   
   def run(self, edit):
-    view       = self.view
-    selections = view.sel() # the cursor position in each multiline selection
+    view = self.view
     
-    for selection in selections:
+    for selection in view.sel():
       # Skip processing selected text -- that'll overwrite default behavior:
       if not selection.empty(): continue
       
