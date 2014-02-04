@@ -1,28 +1,32 @@
-import sublime, sublime_plugin, re
+import sublime, sublime_plugin
+import re
 
-# Adds parentheses around the current word:
+# Adds parentheses around the cursor for a given word:
 class AddParenthesesCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     view = self.view
-    
+
     for selection in view.sel():
-      opening_position = False
-      closing_position = False
-      
-      # Continue to put parentheses around the word:
+      opening_position = None
+      closing_position = None
+
+      # Continue to put parentheses around the cursor:
       if selection.empty():
+        # Extract word:
+        word = view.word(selection)
+
         # Skip trying to put parentheses around empty words:
-        if re.match("\s+", view.substr(view.word(selection))): continue
-        
-        opening_position = view.word(selection).begin()
-        closing_position = view.word(selection).end() + 1
-        
-      # Put paretheses around the entire selection, mimicking the default behavior:
+        if re.match("\s+", view.substr(word)): continue
+
+        opening_position = word.begin()
+        closing_position = word.end() + 1
+
+      # Mimic default behavior:
       else:
         opening_position = selection.begin()
         closing_position = selection.end() + 1
-      
-      # Actually put the paretheses around the selection:
+
+      # Put the parentheses around the selection:
       if opening_position and closing_position:
         view.insert(edit, opening_position, "(")
         view.insert(edit, closing_position, ")")
