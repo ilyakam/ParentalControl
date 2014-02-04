@@ -1,0 +1,18 @@
+{
+  // Parentheses to match on:
+  "parentheses_match": {
+    "(": ")",
+    "[": "]",
+    "{": "}"
+  },
+
+  // Replace opening and closing brackets by language:
+  "coffeescript": {
+    "opening": " ",
+    "closing": ""
+  },
+  "default": {
+    "opening": "",
+    "closing": ""
+  }
+}

@@ -1,3 +1,4 @@
+from os.path import basename
 import sublime, sublime_plugin
 import re
 
@@ -33,61 +34,70 @@ class AddParenthesesCommand(sublime_plugin.TextCommand):
 
 # Removes parentheses around the cursor in a given line:
 class RemoveParenthesesCommand(sublime_plugin.TextCommand):
-  parentheses_types = ["(", "[", "{"]
-  parentheses_match = {"(": ")",
-                       "[": "]",
-                       "{": "}"}
-  
   def run(self, edit):
     view = self.view
-    
+
+    # Initialize custom settings:
+    pc_settings = sublime.load_settings("Parental Control.sublime-settings")
+    syntax = view.settings().get("syntax")
+    language = basename(syntax).replace(".tmLanguage", "").lower()
+    replace_with = pc_settings.get(language, pc_settings.get("default"))
+    parentheses_match = pc_settings.get("parentheses_match")
+
+    # Iterate through each possible selection:
     for selection in view.sel():
-      # Skip processing selected text -- that'll overwrite default behavior:
-      if not selection.empty(): continue
-      
+
       seeking_position = selection.begin()
       opening_position = False
       closing_position = False
-      closing_matching = False # the matching closing parentheses
-      
-      # Look backwards until you find a parentheses:
+      opening_character = None
+      closing_character = None
+
+      # Move left until an opening bracket is found:
       while seeking_position > 0:
         seeking_position -= 1
-        point             = view.substr(seeking_position)
-        
-        # If opening parentheses found
-        if point in self.parentheses_types:
-          closing_matching = self.parentheses_match[point]
+        character = view.substr(seeking_position)
+
+        if character in parentheses_match.keys():
           opening_position = seeking_position
+          opening_character = character
+          closing_character = parentheses_match[opening_character]
           break
-      
-      # Stop processing this selection if no opening parentheses found:
-      if not closing_matching or not opening_position: continue
-      
-      # Reinitialize the seeking position:
+
+        # If no opening bracket is found, skip to the next selection:
+        else:
+          continue
+
+      # Reinstantiate seeking position:
       seeking_position = selection.begin()
-      
-      # Stop processing this selection if we're outside the matching parentheses:
-      while seeking_position > opening_position:
-        seeking_position -= 1
-        if view.substr(seeking_position) == closing_matching:
-          opening_position = False
-          break
-        
-      # Reinitialize the seeking position:
-      seeking_position = selection.begin()
-      
-      # Look forward through EOF until you find a matching closing parentheses:
-      while closing_matching and seeking_position < view.size():
-        point = view.substr(seeking_position)
-        
-        if point == closing_matching:
-          closing_position = seeking_position
-          break
-        
+      bracket_counter = 0
+
+      # Move right
+      while seeking_position < view.size():
+        character = view.substr(seeking_position)
+
+        # For each opening bracket encountered, increment the bracket counter:
+        if character is opening_character:
+          bracket_counter += 1
+
+        # For each closing bracket encountered, increment the bracket counter:
+        elif character is closing_character:
+          bracket_counter -= 1
+
+          # When the matching closing bracket is found:
+          if bracket_counter < 0:
+            closing_position = seeking_position
+            break
+
         seeking_position += 1
-      
-      # Actually replace the parentheses pair with a space and an empty character:
+
+      # Replace the parentheses:
       if opening_position and closing_position:
-        view.replace(edit, sublime.Region(opening_position, opening_position + 1), " ")
-        view.replace(edit, sublime.Region(closing_position, closing_position + 1), "")
+        # Delete the last position first; otherwise closing position
+        # must be offset:
+        view.replace(edit,
+                     sublime.Region(closing_position, closing_position+1),
+                     replace_with["closing"])
+        view.replace(edit,
+                     sublime.Region(opening_position, opening_position+1),
+                     replace_with["opening"])
