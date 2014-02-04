@@ -1,15 +1,28 @@
-# ParentalControl - A Sublime Text 2 Plugin #
+# ParentalControl - A Sublime Text Plugin #
 
-A plugin for [Sublime Text 2](http://www.sublimetext.com/) that allows you to easily add and remove parentheses around words and expressions.
+A plugin for [Sublime Text](http://www.sublimetext.com/) that allows you to easily add and remove parentheses around words and expressions.
 
-It is particularly useful in languages where parentheses are optional under certain circumstances, such as in [CoffeeScript](http://www.coffeescript.com/).
+It is particularly useful in languages where parentheses are optional under certain circumstances, such as in [CoffeeScript](http://www.coffeescript.org/).
 
 ## Usage ##
+
+#### OSX ####
+
+* **Command + Shift + (** to create parentheses around the current word.
+* **Command + Shift + )** to remove parentheses around the cursor.
+
+#### Windows / Linux ####
 
 * **Control + Shift + (** to create parentheses around the current word.
 * **Control + Shift + )** to remove parentheses around the cursor.
 
 ## Changelog ##
+
+#### v1.1.0 ####
+
+* Ensured compatibility with [ST3](http://www.sublimetext.com/3).
+* Added syntax and language aware settings file.
+* Refactored code and fixed some miscellaneous bugs with `RemoveParentheses`.
 
 #### v1.0.0 ####
 
