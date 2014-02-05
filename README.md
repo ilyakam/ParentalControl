@@ -18,6 +18,12 @@ It is particularly useful in languages where parentheses are optional under cert
 
 ## Changelog ##
 
+#### v1.1.1 ####
+
+* Fixed complex and nested parentheses.
+* Fixed parentheses starting on position 0.
+* More refactoring, cleanup, and comments.
+
 #### v1.1.0 ####
 
 * Ensured compatibility with [ST3](http://www.sublimetext.com/3).
