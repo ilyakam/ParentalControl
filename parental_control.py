@@ -52,17 +52,29 @@ class RemoveParenthesesCommand(sublime_plugin.TextCommand):
       closing_position = False
       opening_character = None
       closing_character = None
+      encounters = {}
+      for key in parentheses_match.values():
+        encounters[key] = 0
 
       # Move left until an opening bracket is found:
-      while seeking_position > 0:
+      while seeking_position >= 0:
         seeking_position -= 1
         character = view.substr(seeking_position)
 
+        # Add the number of closing brackets encountered:
+        if character in parentheses_match.values():
+          encounters[character] += 1
+
+        # Subtract the number of opening brackets encountered:
         if character in parentheses_match.keys():
-          opening_position = seeking_position
-          opening_character = character
-          closing_character = parentheses_match[opening_character]
-          break
+          closing_character = parentheses_match.get(character)
+          encounters[closing_character] -= 1
+
+          # The true opening bracket is found after all pairs were skipped over:
+          if encounters.get(closing_character) < 0:
+            opening_position = seeking_position
+            opening_character = character
+            break
 
         # If no opening bracket is found, skip to the next selection:
         else:
@@ -97,7 +109,7 @@ class RemoveParenthesesCommand(sublime_plugin.TextCommand):
         # must be offset:
         view.replace(edit,
                      sublime.Region(closing_position, closing_position+1),
-                     replace_with["closing"])
+                     replace_with.get("closing"))
         view.replace(edit,
                      sublime.Region(opening_position, opening_position+1),
-                     replace_with["opening"])
+                     replace_with.get("opening"))
