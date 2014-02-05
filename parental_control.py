@@ -76,10 +76,6 @@ class RemoveParenthesesCommand(sublime_plugin.TextCommand):
             opening_character = character
             break
 
-        # If no opening bracket is found, skip to the next selection:
-        else:
-          continue
-
       # Reinstantiate seeking position:
       seeking_position = selection.begin()
       bracket_counter = 0
@@ -104,7 +100,7 @@ class RemoveParenthesesCommand(sublime_plugin.TextCommand):
         seeking_position += 1
 
       # Replace the parentheses:
-      if opening_position and closing_position:
+      if (opening_position >= 0) and (closing_position <= view.size()):
         # Delete the last position first; otherwise closing position
         # must be offset:
         view.replace(edit,
