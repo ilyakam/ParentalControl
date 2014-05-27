@@ -18,6 +18,10 @@ It is particularly useful in languages where parentheses are optional under cert
 
 ## Changelog ##
 
+#### v1.1.2 ####
+
+* Fixed bug when cursor is on position 0 or in-between parenthesis sets.
+
 #### v1.1.1 ####
 
 * Fixed complex and nested parentheses.
@@ -36,7 +40,7 @@ It is particularly useful in languages where parentheses are optional under cert
 
 ## License ##
 
-Copyright (c) 2012 Ilya Kaminsky
+Copyright (c) 2014 Ilya Kaminsky
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
