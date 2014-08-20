@@ -81,7 +81,7 @@ class RemoveParenthesesCommand(sublime_plugin.TextCommand):
 
       # Exit if no opening character is found:
       if opening_character is None:
-        return
+        break
 
       # Reinstantiate seeking position:
       seeking_position = selection.begin()
