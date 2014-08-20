@@ -18,6 +18,10 @@ It is particularly useful in languages where parentheses are optional under cert
 
 ## Changelog ##
 
+#### v1.1.3 ####
+
+* Multiple-cursor mode bugfixes and enhancements.
+
 #### v1.1.2 ####
 
 * Fixed bug when cursor is on position 0 or in-between parenthesis sets.
