@@ -17,7 +17,7 @@ class AddParenthesesCommand(sublime_plugin.TextCommand):
         word = view.word(selection)
 
         # Skip trying to put parentheses around empty words:
-        if re.match("\s+", view.substr(word)): continue
+        if word.empty() or re.match("\s+", view.substr(word)): continue
 
         opening_position = word.begin()
         closing_position = word.end() + 1
@@ -28,7 +28,7 @@ class AddParenthesesCommand(sublime_plugin.TextCommand):
         closing_position = selection.end() + 1
 
       # Put the parentheses around the selection:
-      if opening_position and closing_position:
+      if opening_position is not None and closing_position is not None:
         view.insert(edit, opening_position, "(")
         view.insert(edit, closing_position, ")")
 

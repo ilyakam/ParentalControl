@@ -8,6 +8,7 @@ Notable changes to ParentalControl are recorded here, following
 ### Fixed
 
 - Multi-cursor parenthases removal even following an incomplete pair.
+- Multi-cursor parenthases addition if it starts at the beginning of the buffer.
 
 ## [1.1.3] - 2014-08-20
 
