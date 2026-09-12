@@ -3,12 +3,12 @@
 Notable changes to ParentalControl are recorded here, following
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.1.4] - 2026-09-12
 
 ### Fixed
 
-- Multi-cursor parenthases removal even following an incomplete pair.
-- Multi-cursor parenthases addition if it starts at the beginning of the buffer.
+- Multi-cursor parentheses removal even following an incomplete pair.
+- Multi-cursor parentheses addition if it starts at the beginning of the buffer.
 
 ## [1.1.3] - 2014-08-20
 
