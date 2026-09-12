@@ -6,7 +6,7 @@ It is particularly useful in languages where parentheses are optional under cert
 
 ## Usage ##
 
-#### OSX ####
+#### macOS ####
 
 * **Command + Shift + (** to create parentheses around the current word.
 * **Command + Shift + )** to remove parentheses around the cursor.
@@ -15,32 +15,6 @@ It is particularly useful in languages where parentheses are optional under cert
 
 * **Control + Shift + (** to create parentheses around the current word.
 * **Control + Shift + )** to remove parentheses around the cursor.
-
-## Changelog ##
-
-#### v1.1.3 ####
-
-* Multiple-cursor mode bugfixes and enhancements.
-
-#### v1.1.2 ####
-
-* Fixed bug when cursor is on position 0 or in-between parenthesis sets.
-
-#### v1.1.1 ####
-
-* Fixed complex and nested parentheses.
-* Fixed parentheses starting on position 0.
-* More refactoring, cleanup, and comments.
-
-#### v1.1.0 ####
-
-* Ensured compatibility with [ST3](http://www.sublimetext.com/3).
-* Added syntax and language aware settings file.
-* Refactored code and fixed some miscellaneous bugs with `RemoveParentheses`.
-
-#### v1.0.0 ####
-
-* Initial release.
 
 ## License ##
 
