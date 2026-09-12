@@ -1,5 +1,4 @@
 from os.path import basename
-from collections import OrderedDict
 import sublime, sublime_plugin
 import re
 
@@ -18,7 +17,7 @@ class AddParenthesesCommand(sublime_plugin.TextCommand):
         word = view.word(selection)
 
         # Skip trying to put parentheses around empty words:
-        if re.match("\s+", view.substr(word)): continue
+        if word.empty() or re.match("\s+", view.substr(word)): continue
 
         opening_position = word.begin()
         closing_position = word.end() + 1
@@ -29,7 +28,7 @@ class AddParenthesesCommand(sublime_plugin.TextCommand):
         closing_position = selection.end() + 1
 
       # Put the parentheses around the selection:
-      if opening_position and closing_position:
+      if opening_position is not None and closing_position is not None:
         view.insert(edit, opening_position, "(")
         view.insert(edit, closing_position, ")")
 
@@ -45,13 +44,13 @@ class RemoveParenthesesCommand(sublime_plugin.TextCommand):
     replace_with = pc_settings.get(language, pc_settings.get("default"))
     parentheses_match = pc_settings.get("parentheses_match")
 
-    parentheses_pairs = []
+    replacements = {}
 
     # Iterate through each possible selection:
     for selection in view.sel():
       seeking_position = selection.begin()
-      opening_position = False
-      closing_position = False
+      opening_position = None
+      closing_position = None
       opening_character = None
       closing_character = None
       encounters = {}
@@ -79,9 +78,9 @@ class RemoveParenthesesCommand(sublime_plugin.TextCommand):
             opening_character = character
             break
 
-      # Exit if no opening character is found:
+      # Skip this selection if no opening character is found:
       if opening_character is None:
-        break
+        continue
 
       # Reinstantiate seeking position:
       seeking_position = selection.begin()
@@ -106,21 +105,14 @@ class RemoveParenthesesCommand(sublime_plugin.TextCommand):
 
         seeking_position += 1
 
-      # Prepend to array of parentheses pairs that contain open/close tuples:
-      if (opening_position >= 0) and (closing_position <= view.size()):
-        # Add pairs in reverse order to maintain correct replacement positions:
-        parentheses_pairs.insert(0, (opening_position, closing_position))
+      # Only remove complete pairs:
+      if closing_position is not None:
+        # Key by position so multiple cursors in the same pair remove it once:
+        replacements[opening_position] = replace_with.get("opening")
+        replacements[closing_position] = replace_with.get("closing")
 
-    # Dedupe the parentheses pairs:
-    parentheses_pairs = list(OrderedDict.fromkeys(parentheses_pairs))
-
-    # Replace the parentheses pairs:
-    for (opening_position, closing_position) in parentheses_pairs:
-      # Delete the last position first; otherwise closing position
-      # must be offset:
+    # Replace from right to left, including when different pairs are nested:
+    for position in sorted(replacements, reverse=True):
       view.replace(edit,
-                   sublime.Region(closing_position, closing_position+1),
-                   replace_with.get("closing"))
-      view.replace(edit,
-                   sublime.Region(opening_position, opening_position+1),
-                   replace_with.get("opening"))
+                   sublime.Region(position, position+1),
+                   replacements[position])
